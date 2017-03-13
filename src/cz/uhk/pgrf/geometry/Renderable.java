@@ -29,6 +29,10 @@ public interface Renderable {
 
 	void render(List<Objekt3D> objs);
 	
-	void draw(Point3D vertexA, Point3D vertexB, Point3D vertexC);
+	void drawTriangle(Point3D vertexA, Point3D vertexB, Point3D vertexC);
+	
+	void setFillOrNot(boolean fillOrNot);
+	
+	boolean isFillOrNot();
 
 }

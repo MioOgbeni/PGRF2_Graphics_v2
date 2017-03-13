@@ -24,8 +24,6 @@ import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 
 import cz.uhk.pgrf.geometry.Cube;
-import cz.uhk.pgrf.geometry.Triangle;
-import cz.uhk.pgrf.geometry.Krivky;
 import cz.uhk.pgrf.geometry.Objekt3D;
 import cz.uhk.pgrf.geometry.Osy;
 import cz.uhk.pgrf.geometry.Tetrahedron;
@@ -61,19 +59,15 @@ public class Canvas {
 	private Mat4 model;
 	private Objekt3D Cube;
 	private Objekt3D Tetra;
-	private Objekt3D Cubi;
-	private Objekt3D Triangle;
 	//jak rychlé budou pohyby
 	private final double step = 0.5;
 	private JRadioButton JPers;
 	private JRadioButton JOrth;
-	private JRadioButton JBezier;
-	private JRadioButton JCoons;
-	private JRadioButton JFerguson;
+	private JRadioButton JFill;
+	private JRadioButton JWire;
 	private JCheckBox JCube;
 	private JCheckBox JTetra;
-	private JCheckBox JCubi;
-	private Krivky krivka;
+	private JCheckBox JMesh;
 	private double sc = 1;
 	private int endX;
 	private int endY;
@@ -85,7 +79,7 @@ public class Canvas {
 		 * Nastavení okna
 		 */
 		frame = new JFrame();
-		frame.setTitle("PGRF1_Graphics");
+		frame.setTitle("PGRF2_Graphics_v2");
 		frame.setResizable(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -118,14 +112,9 @@ public class Canvas {
 		camera = new Camera(new Vec3D(-10, 0, 0), 0, 0, 1, true);
 		view = camera.getViewMatrix();
 
-		//gos.add(new Objekt3D(new Osy()));
+		gos.add(new Objekt3D(new Osy()));
 		Cube = new Objekt3D(new Cube());
-		Triangle = new Objekt3D(new Triangle());
 		Tetra = new Objekt3D(new Tetrahedron());
-		krivka = new Krivky();
-		krivka.setBaseColor(Color.RED.getRGB());
-		Cubi = new Objekt3D(krivka);
-
 		draw();
 
 		/**
@@ -257,46 +246,41 @@ public class Canvas {
 		JPers.setFocusable(false);
 		JOrth.setFocusable(false);
 
-		JBezier = new JRadioButton("Bezierova");
-		JBezier.setSelected(true);
-		JCoons = new JRadioButton("Coonsova");
-		JFerguson = new JRadioButton("Fergusonova");
+		JFill = new JRadioButton("Vyplněný");
+		JFill.setSelected(true);
+		JWire = new JRadioButton("Drátěný");
 
 		ButtonGroup group1 = new ButtonGroup();
-		group1.add(JBezier);
-		group1.add(JCoons);
-		group1.add(JFerguson);
+		group1.add(JFill);
+		group1.add(JWire);
 
-		JBezier.setFocusable(false);
-		JCoons.setFocusable(false);
-		JFerguson.setFocusable(false);
+		JFill.setFocusable(false);
+		JWire.setFocusable(false);
 		
 		JCube = new JCheckBox("Krychle");
 		JTetra = new JCheckBox("Jehlan");
-		JCubi = new JCheckBox("Křivka");
+		JMesh = new JCheckBox("Síť");
 		
 		JCube.setFocusable(false);
 		JTetra.setFocusable(false);
-		JCubi.setFocusable(false);
-
+		JMesh.setFocusable(false);
+		
 		kontejner.add(JPers);
 		kontejner.add(JOrth);
-		kontejner.add(JBezier);
-		kontejner.add(JCoons);
-		kontejner.add(JFerguson);
+		kontejner.add(JFill);
+		kontejner.add(JWire);
 		kontejner.add(JCube);
 		kontejner.add(JTetra);
-		kontejner.add(JCubi);
+		kontejner.add(JMesh);
 		
 		Reset.addActionListener(e -> reset());
 		JPers.addActionListener(e -> vyberPers());
 		JOrth.addActionListener(e -> vyberOrth());
-		JBezier.addActionListener(e -> vyberBezier());
-		JCoons.addActionListener(e -> vyberCoons());
-		JFerguson.addActionListener(e -> vyberFerguson());
+		JFill.addActionListener(e -> vyberFill());
+		JWire.addActionListener(e -> vyberWire());
 		JCube.addActionListener(e -> vyberCube());
 		JTetra.addActionListener(e -> vyberTetra());
-		JCubi.addActionListener(e -> vyberCubi());
+		JMesh.addActionListener(e -> vyberMesh());
 	}
 
 	private void vyberCube() {
@@ -317,37 +301,23 @@ public class Canvas {
 			gos.remove(Tetra);
 			draw();
 		}
+	}
+	
+	private void vyberMesh() {
 
 	}
 
-	private void vyberCubi() {
-		if (JCubi.isSelected()){
-			gos.add(Cubi);
-			draw();
-		}else{
-			gos.remove(Cubi);
-			draw();
-		}
-	}
-
-	private void vyberFerguson() {
-		JFerguson.setSelected(true);
-		krivka.setKrivka(2);
+	private void vyberFill() {
+		JFill.setSelected(true);
+		wfr.setFillOrNot(true);
 		draw();
 		
 
 	}
 
-	private void vyberCoons() {
-		JCoons.setSelected(true);
-		krivka.setKrivka(1);
-		draw();
-
-	}
-
-	private void vyberBezier() {
-		JBezier.setSelected(true);
-		krivka.setKrivka(0);
+	private void vyberWire() {
+		JWire.setSelected(true);
+		wfr.setFillOrNot(false);
 		draw();
 
 	}
@@ -369,7 +339,7 @@ public class Canvas {
 		view = camera.getViewMatrix();
 		proj = new Mat4PerspRH(Math.PI / 4, 1, 0.1, 200);
 		JPers.setSelected(true);
-		JBezier.setSelected(true);
+		JFill.setSelected(true);
 		draw();
 	}
 
@@ -425,10 +395,11 @@ public class Canvas {
 		help.drawString("Mouse_BTN1 -> otáčení kamerou ", 10, 75);
 		help.drawString("Mouse_BTN3 -> otáčení objekty ", 10, 90);
 		help.drawString("Mouse_Wheel -> zooming ", 10, 105);
+		help.drawString("© Tomáš Novák, PGRF2, Březen 2017", 570, 760);
 	}
 
 	public static void main(String[] args) {
-		Canvas canvas = new Canvas(800, 600);
+		Canvas canvas = new Canvas(800, 800);
 		SwingUtilities.invokeLater(() -> {
 			SwingUtilities.invokeLater(() -> {
 				SwingUtilities.invokeLater(() -> {
