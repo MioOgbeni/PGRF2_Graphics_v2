@@ -16,19 +16,19 @@ public class Cube extends GeometricObject {
 
 	public Cube() {
 
-		Integer[] ints = new Integer[] { 0,1,2,  0,2,3,  0,4,5,  0,5,1,  3,2,6,  3,6,7,  4,7,6,  4,6,5,  1,2,6,  1,6,5,  0,3,7,  0,7,4, };
+		Integer[] ints = new Integer[] { 0,1,2,  0,2,3,  0,4,5,  0,5,1,  3,2,6,  3,6,7,  4,7,6,  4,6,5,  1,2,6,  1,6,5,  0,3,7,  0,7,4 };
 		indexBuffer = new ArrayList<>(Arrays.asList(ints));
 
 		vertexBuffer = new ArrayList<>();
-		vertexBuffer.add(new Point3D(0, 0, 0));
-		vertexBuffer.add(new Point3D(0, 1, 0));
-		vertexBuffer.add(new Point3D(1, 1, 0));
-		vertexBuffer.add(new Point3D(1, 0, 0));
+		vertexBuffer.add(new Point3D(-1, -1,  1));
+		vertexBuffer.add(new Point3D(-1,  1,  1));
+		vertexBuffer.add(new Point3D( 1,  1,  1));
+		vertexBuffer.add(new Point3D( 1, -1,  1));
 
-		vertexBuffer.add(new Point3D(0, 0, -1));
-		vertexBuffer.add(new Point3D(0, 1, -1));
-		vertexBuffer.add(new Point3D(1, 1, -1));
-		vertexBuffer.add(new Point3D(1, 0, -1));
+		vertexBuffer.add(new Point3D(-1, -1, -1));
+		vertexBuffer.add(new Point3D(-1,  1, -1));
+		vertexBuffer.add(new Point3D( 1,  1, -1));
+		vertexBuffer.add(new Point3D( 1, -1, -1));
 		
 		color = new ArrayList<>();
 		color.add(0x25B7E8);

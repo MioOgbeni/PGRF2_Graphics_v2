@@ -1,9 +1,7 @@
 package cz.uhk.pgrf.geometry;
 
-import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.List;
-import java.util.Random;
 
 import cz.uhk.pgrf.transforms.Mat4;
 import cz.uhk.pgrf.transforms.Mat4Identity;
@@ -45,6 +43,23 @@ public class WireFrameRenderer implements Renderable {
     @Override
     public void setProj(Mat4 proj) {
         this.proj = proj;
+    }
+    
+    //vykreslí list objektù
+    @Override
+    public void render(List<Objekt3D> objs) {
+        for (Objekt3D obj : objs) {
+            render(obj);
+        }
+
+    }
+    
+    //vykreslí 1 daný objekt
+    @Override
+    public void render(Objekt3D obj){
+        for(int i = 0; i < obj.getCount();i++){
+            render(obj.get(i),obj.getMat());
+        }
     }
     
     //zobrazovací øetìzec
@@ -133,33 +148,12 @@ public class WireFrameRenderer implements Renderable {
 
     }
 
-    //vykreslí list objektù
-    @Override
-    public void render(List<Objekt3D> objs) {
-        for (Objekt3D obj : objs) {
-            render(obj);
-        }
-
-    }
-    
-    //vykreslí 1 daný objekt
-    @Override
-    public void render(Objekt3D obj){
-        for(int i = 0; i < obj.getCount();i++){
-            render(obj.get(i),obj.getMat());
-        }
-    }
-
 	@Override
 	public void draw(Point3D vertexA, Point3D vertexB, Point3D vertexC) {
-        Vec3D vecA = null;
-        Vec3D vecB = null;
-        Vec3D vecC = null;
-        
         //4D -> 3D dehomog
-        vecA = vertexA.dehomog().get();
-        vecB = vertexB.dehomog().get();
-        vecC = vertexC.dehomog().get();
+        Vec3D vecA = vertexA.dehomog().get();
+        Vec3D vecB = vertexB.dehomog().get();
+        Vec3D vecC = vertexC.dehomog().get();
 
         
         // oøezání objemem
@@ -181,7 +175,7 @@ public class WireFrameRenderer implements Renderable {
         vecA = vecA.mul(new Vec3D(1.0, -1.0, 1.0)).add(new Vec3D(1.0, 1.0, 0.0)).mul(new Vec3D((img.getWidth() - 1) / 2, (img.getHeight() - 1) / 2, 1.0));
         vecB = vecB.mul(new Vec3D(1.0, -1.0, 1.0)).add(new Vec3D(1.0, 1.0, 0.0)).mul(new Vec3D((img.getWidth() - 1) / 2, (img.getHeight() - 1) / 2, 1.0));
         vecC = vecC.mul(new Vec3D(1.0, -1.0, 1.0)).add(new Vec3D(1.0, 1.0, 0.0)).mul(new Vec3D((img.getWidth() - 1) / 2, (img.getHeight() - 1) / 2, 1.0));     
-     
+
         //vykreslení
 //        img.setRGB(500, 500, 0xff0000);
 //        Graphics g = img.getGraphics();
@@ -206,14 +200,14 @@ public class WireFrameRenderer implements Renderable {
         	vecB = vecHelp;
         }
         
-        for (int y = Math.max((int)vecA.getY() + 1, 0); y <= Math.min(vecB.getY(), zbf.getHeight() - 1); y++) {
-        	double s1 = (y - vecA.getY()) / (vecB.getY() - vecA.getY());
-        	double x1 = vecA.getX() * (1.0 - s1) + vecB.getX() * s1;
-        	double z1 = vecA.getZ() * (1.0 - s1) + vecB.getZ() * s1;
+        for (int y = Math.max((int)vecA.getY() + 1, 0); y <= Math.min((int)vecB.getY(), zbf.getHeight() - 1); y++) {
+        	double t = (y - vecA.getY()) / (vecB.getY() - vecA.getY());
+        	double x1 = vecA.getX() * (1.0 - t) + vecB.getX() * t;
+        	double z1 = vecA.getZ() * (1.0 - t) + vecB.getZ() * t;
         	
-        	double s2 = (y - vecA.getY()) / (vecC.getY() - vecA.getY());
-        	double x2 = vecA.getX() * (1.0 - s2) + vecC.getX() * s2;       	
-        	double z2 = vecA.getZ() * (1.0 - s2) + vecC.getZ() * s2;
+        	double t2 = (y - vecA.getY()) / (vecC.getY() - vecA.getY());
+        	double x2 = vecA.getX() * (1.0 - t2) + vecC.getX() * t2;       	
+        	double z2 = vecA.getZ() * (1.0 - t2) + vecC.getZ() * t2;
         	
         	if (x1 > x2) {
                 double help = x1;
@@ -225,9 +219,9 @@ public class WireFrameRenderer implements Renderable {
             }
 
         	for (int x = Math.max((int)x1 + 1, 0); x <= Math.min(x2, zbf.getWidth() - 1); x++) {
-        		double t = (x - x1) / (x2 - x1);
-        		double z3 = z1 * (1.0 - t) + z2 * t;
-        		if (zbf.getPixel(x, y) > z3 && z3 >= 0.0) {
+        		double t3 = (x - x1) / (x2 - x1);
+        		double z3 = z1 * (1.0 - t3) + z2 * t3;
+        		if (zbf.getPixel(x, y) >= z3 && z3 >= 0.0) {
         			zbf.setPixel(x, y, z3);
         			img.setRGB(x, y, color);
         		}
@@ -237,13 +231,13 @@ public class WireFrameRenderer implements Renderable {
 //        
 
         for (int y = Math.max((int)vecB.getY() + 1, 0); y <= Math.min(vecC.getY(), zbf.getHeight() - 1); y++) {
-        	double s1 = (y - vecB.getY()) / (vecC.getY() - vecA.getY());
-        	double x1 = vecB.getX() * (1.0 - s1) + vecC.getX() * s1;
-        	double z1 = vecB.getZ() * (1.0 - s1) + vecC.getZ() * s1;
+        	double t = (y - vecB.getY()) / (vecC.getY() - vecA.getY());
+        	double x1 = vecB.getX() * (1.0 - t) + vecC.getX() * t;
+        	double z1 = vecB.getZ() * (1.0 - t) + vecC.getZ() * t;
         	
-        	double s2 = (y - vecA.getY()) / (vecC.getY() - vecA.getY());
-        	double x2 = vecA.getX() * (1.0 - s2) + vecC.getX() * s2;       	
-        	double z2 = vecA.getZ() * (1.0 - s2) + vecC.getZ() * s2;
+        	double t2 = (y - vecA.getY()) / (vecC.getY() - vecA.getY());
+        	double x2 = vecA.getX() * (1.0 - t2) + vecC.getX() * t2;       	
+        	double z2 = vecA.getZ() * (1.0 - t2) + vecC.getZ() * t2;
         	
         	if (x1 > x2) {
                 double help = x1;
@@ -255,9 +249,9 @@ public class WireFrameRenderer implements Renderable {
             }
 
         	for (int x = Math.max((int)x1 + 1, 0); x <= Math.min(x2, zbf.getWidth() - 1); x++) {
-        		double t = (x - x1) / (x2 - x1);
-        		double z3 = z1 * (1.0 - t) + z2 * t;
-        		if (zbf.getPixel(x, y) > z3 && z3 >= 0.0) {
+        		double t3 = (x - x1) / (x2 - x1);
+        		double z3 = z1 * (1.0 - t3) + z2 * t3;
+        		if (zbf.getPixel(x, y) >= z3 && z3 >= 0.0) {
         			zbf.setPixel(x, y, z3);
         			img.setRGB(x, y, color);
         		}
