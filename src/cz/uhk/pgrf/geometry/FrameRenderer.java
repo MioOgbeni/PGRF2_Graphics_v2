@@ -17,7 +17,7 @@ import cz.uhk.pgrf.transforms.Vec3D;
  * @version 2016
  */ 
 
-public class WireFrameRenderer implements Renderable {
+public class FrameRenderer implements Renderable {
 
     private BufferedImage img;
     private Zbuffer zbf;
@@ -330,15 +330,86 @@ public class WireFrameRenderer implements Renderable {
         }
             
         //upravení na okno
-        int x1 = (int) ((vecA.getX() + 1) * (img.getWidth() - 1) / 2);
-        int y1 = (int) ((1 - vecA.getY()) * (img.getHeight() - 1) / 2);
+        vecA = vecA.mul(new Vec3D(1.0, -1.0, 1.0)).add(new Vec3D(1.0, 1.0, 0.0)).mul(new Vec3D((img.getWidth() - 1) / 2, (img.getHeight() - 1) / 2, 1.0));
+        vecB = vecB.mul(new Vec3D(1.0, -1.0, 1.0)).add(new Vec3D(1.0, 1.0, 0.0)).mul(new Vec3D((img.getWidth() - 1) / 2, (img.getHeight() - 1) / 2, 1.0));
+        int x1 = (int) vecA.getX();
+        int y1 = (int) vecA.getY();
+        double z1 = vecA.getZ(); 
 
-        int x2 = (int) ((vecB.getX() + 1) * (img.getWidth() - 1) / 2);
-        int y2 = (int) ((1 - vecB.getY()) * (img.getHeight() - 1) / 2);
+        int x2 = (int) vecB.getX();
+        int y2 = (int) vecB.getY();
+        double z2 = vecB.getZ(); 
 
         //vykreslení
-        Graphics g = img.getGraphics();
-        g.setColor(new Color(geoObj.getColor(i/2)));
-        g.drawLine(x1, y1, x2, y2);	
+        double dx = x2 - x1;
+		double dy = y2 - y1;
+
+		if (Math.abs(y2 - y1) <= Math.abs(x2 - x1)) {
+
+				// prohozeni vodicich os
+				if (x2 < x1) {
+					int pomoc = x2;
+					x2 = x1;
+					x1 = pomoc;
+
+					pomoc = y2;
+					y2 = y1;
+					y1 = pomoc;
+					
+					double pomocD = z2;
+					z2 = z1;
+					z1 = pomocD;
+				}
+
+				// vypocet
+				double k = (double) dy / dx;
+				int int_y;
+				double y = (double) y1;
+
+				// tisk img
+				for (int x = x1; x <= x2; x++) {
+					int_y = (int) Math.round(y);
+					if((x > 0 && x<img.getWidth() -1 )&&(int_y > 0 && int_y< img.getHeight() -1)){
+	            		double t3 = ((double)x - x1) / (x2 - x1);
+	            		double z3 = z1 * (1.0 - t3) + z2 * t3;
+	            		if (zbf.getPixel(x, int_y) > z3 && z3 >= 0.0) {
+	            			zbf.setPixel(x, int_y, z3);
+	            			img.setRGB(x, int_y, geoObj.getColor(i/2));
+	            		}
+					}
+					y += k;
+				}
+		} else {
+
+			// prohozeni vodicich os
+			if (y2 < y1) {
+				int pomoc = x2;
+				x2 = x1;
+				x1 = pomoc;
+
+				pomoc = y2;
+				y2 = y1;
+				y1 = pomoc;
+			}
+
+			// vypocet
+			double k = (double) dx / dy;
+			int int_x;
+			double x = (double) x1;
+
+			// tisk img
+			for (int y = y1; y <= y2; y++) {
+				int_x = (int) Math.round(x);
+				if((int_x > 0 && int_x<img.getWidth() -1)&&(y > 0 && y< img.getHeight() -1)){
+            		double t3 = ((double)y - y1) / (y2 - y1);
+            		double z3 = z1 * (1.0 - t3) + z2 * t3;
+            		if (zbf.getPixel(int_x, y) > z3 && z3 >= 0.0) {
+            			zbf.setPixel(int_x, y, z3);
+            			img.setRGB(int_x, y, geoObj.getColor(i/2));
+            		}
+				}
+				x += k;
+			}
+		}	
 	}
 }

@@ -28,7 +28,8 @@ import cz.uhk.pgrf.geometry.Objekt3D;
 import cz.uhk.pgrf.geometry.Osy;
 import cz.uhk.pgrf.geometry.Tetrahedron;
 import cz.uhk.pgrf.geometry.Triangle;
-import cz.uhk.pgrf.geometry.WireFrameRenderer;
+import cz.uhk.pgrf.geometry.FrameRenderer;
+import cz.uhk.pgrf.geometry.Mesh;
 import cz.uhk.pgrf.transforms.Camera;
 import cz.uhk.pgrf.transforms.Mat4;
 import cz.uhk.pgrf.transforms.Mat4Identity;
@@ -52,23 +53,26 @@ public class Canvas {
 	private JPanel panel;
 	private BufferedImage img;
 	private List<Objekt3D> gos;
-	private WireFrameRenderer wfr;
+	private FrameRenderer wfr;
 	private Camera camera;
 	@SuppressWarnings("unused")
 	private Mat4 view;
 	private Mat4 proj;
 	private Mat4 model;
-	private Objekt3D Cube;
-	private Objekt3D Tetra;
+	private Objekt3D cube;
+	private Objekt3D tetra;
+	private Objekt3D triangle;
+	private Objekt3D mesh;
 	//jak rychlé budou pohyby
 	private final double step = 0.5;
-	private JRadioButton JPers;
-	private JRadioButton JOrth;
-	private JRadioButton JFill;
-	private JRadioButton JWire;
-	private JCheckBox JCube;
-	private JCheckBox JTetra;
-	private JCheckBox JMesh;
+	private JRadioButton jPers;
+	private JRadioButton jOrth;
+	private JRadioButton jFill;
+	private JRadioButton jWire;
+	private JCheckBox jCube;
+	private JCheckBox jTetra;
+	private JCheckBox jTriangle;
+	private JCheckBox jMesh;
 	private double sc = 1;
 	private int endX;
 	private int endY;
@@ -105,7 +109,7 @@ public class Canvas {
 		 * Vytváření objektů
 		 */
 		gos = new ArrayList<>();
-		wfr = new WireFrameRenderer();
+		wfr = new FrameRenderer();
 		wfr.setBufferedImage(img);
 
 		model = new Mat4Identity();
@@ -114,8 +118,10 @@ public class Canvas {
 		view = camera.getViewMatrix();
 
 		gos.add(new Objekt3D(new Osy()));
-		Cube = new Objekt3D(new Cube());
-		Tetra = new Objekt3D(new Tetrahedron());
+		cube = new Objekt3D(new Cube());
+		tetra = new Objekt3D(new Tetrahedron());
+		triangle = new Objekt3D(new Triangle());
+		mesh = new Objekt3D(new Mesh());
 		draw();
 
 		/**
@@ -236,80 +242,100 @@ public class Canvas {
 		Reset.setFocusable(false);
 		kontejner.add(Reset);
 
-		JPers = new JRadioButton("Perspectivní");
-		JPers.setSelected(true);
-		JOrth = new JRadioButton("Ortogonální");
+		jPers = new JRadioButton("Perspectivní");
+		jPers.setSelected(true);
+		jOrth = new JRadioButton("Ortogonální");
 
 		ButtonGroup group = new ButtonGroup();
-		group.add(JPers);
-		group.add(JOrth);
+		group.add(jPers);
+		group.add(jOrth);
 
-		JPers.setFocusable(false);
-		JOrth.setFocusable(false);
+		jPers.setFocusable(false);
+		jOrth.setFocusable(false);
 
-		JFill = new JRadioButton("Vyplněný");
-		JFill.setSelected(true);
-		JWire = new JRadioButton("Drátěný");
+		jFill = new JRadioButton("Vyplněný");
+		jFill.setSelected(true);
+		jWire = new JRadioButton("Drátěný");
 
 		ButtonGroup group1 = new ButtonGroup();
-		group1.add(JFill);
-		group1.add(JWire);
+		group1.add(jFill);
+		group1.add(jWire);
 
-		JFill.setFocusable(false);
-		JWire.setFocusable(false);
+		jFill.setFocusable(false);
+		jWire.setFocusable(false);
 		
-		JCube = new JCheckBox("Krychle");
-		JTetra = new JCheckBox("Jehlan");
-		JMesh = new JCheckBox("Síť");
+		jCube = new JCheckBox("Krychle");
+		jTetra = new JCheckBox("Jehlan");
+		jTriangle = new JCheckBox("Trojuhelník");
+		jMesh = new JCheckBox("Síť");
 		
-		JCube.setFocusable(false);
-		JTetra.setFocusable(false);
-		JMesh.setFocusable(false);
+		jCube.setFocusable(false);
+		jTetra.setFocusable(false);
+		jTriangle.setFocusable(false);
+		jMesh.setFocusable(false);
 		
-		kontejner.add(JPers);
-		kontejner.add(JOrth);
-		kontejner.add(JFill);
-		kontejner.add(JWire);
-		kontejner.add(JCube);
-		kontejner.add(JTetra);
-		kontejner.add(JMesh);
+		kontejner.add(jPers);
+		kontejner.add(jOrth);
+		kontejner.add(jFill);
+		kontejner.add(jWire);
+		kontejner.add(jCube);
+		kontejner.add(jTetra);
+		kontejner.add(jTriangle);
+		kontejner.add(jMesh);
 		
 		Reset.addActionListener(e -> reset());
-		JPers.addActionListener(e -> vyberPers());
-		JOrth.addActionListener(e -> vyberOrth());
-		JFill.addActionListener(e -> vyberFill());
-		JWire.addActionListener(e -> vyberWire());
-		JCube.addActionListener(e -> vyberCube());
-		JTetra.addActionListener(e -> vyberTetra());
-		JMesh.addActionListener(e -> vyberMesh());
+		jPers.addActionListener(e -> vyberPers());
+		jOrth.addActionListener(e -> vyberOrth());
+		jFill.addActionListener(e -> vyberFill());
+		jWire.addActionListener(e -> vyberWire());
+		jCube.addActionListener(e -> vyberCube());
+		jTetra.addActionListener(e -> vyberTetra());
+		jTriangle.addActionListener(e -> vyberTriangle());
+		jMesh.addActionListener(e -> vyberMesh());
 	}
 
 	private void vyberCube() {
-		if (JCube.isSelected()){
-			gos.add(Cube);
+		if (jCube.isSelected()){
+			gos.add(cube);
 			draw();
 		}else{
-			gos.remove(Cube);
+			gos.remove(cube);
 			draw();
 		}
 	}
 
 	private void vyberTetra() {
-		if (JTetra.isSelected()){
-			gos.add(Tetra);
+		if (jTetra.isSelected()){
+			gos.add(tetra);
 			draw();
 		}else{
-			gos.remove(Tetra);
+			gos.remove(tetra);
+			draw();
+		}
+	}
+	
+	private void vyberTriangle() {
+		if (jTriangle.isSelected()){
+			gos.add(triangle);
+			draw();
+		}else{
+			gos.remove(triangle);
 			draw();
 		}
 	}
 	
 	private void vyberMesh() {
-
+		if (jTriangle.isSelected()){
+			gos.add(mesh);
+			draw();
+		}else{
+			gos.remove(mesh);
+			draw();
+		}
 	}
 
 	private void vyberFill() {
-		JFill.setSelected(true);
+		jFill.setSelected(true);
 		wfr.setFillOrNot(true);
 		draw();
 		
@@ -317,7 +343,7 @@ public class Canvas {
 	}
 
 	private void vyberWire() {
-		JWire.setSelected(true);
+		jWire.setSelected(true);
 		wfr.setFillOrNot(false);
 		draw();
 
@@ -339,8 +365,8 @@ public class Canvas {
 		camera = new Camera(new Vec3D(-10, 0, 0), 0, 0, 1, true);
 		view = camera.getViewMatrix();
 		proj = new Mat4PerspRH(Math.PI / 4, 1, 0.1, 200);
-		JPers.setSelected(true);
-		JFill.setSelected(true);
+		jPers.setSelected(true);
+		jFill.setSelected(true);
 		draw();
 	}
 

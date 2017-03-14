@@ -22,9 +22,9 @@ public class Osy extends GeometricObject {
 
 		vertexBuffer = new ArrayList<>();
 		vertexBuffer.add(new Point3D(0, 0, 0));
-		vertexBuffer.add(new Point3D(1, 0, 0));
-		vertexBuffer.add(new Point3D(0, 1, 0));
-		vertexBuffer.add(new Point3D(0, 0, 1));
+		vertexBuffer.add(new Point3D(10, 0, 0));
+		vertexBuffer.add(new Point3D(0, 10, 0));
+		vertexBuffer.add(new Point3D(0, 0, 10));
 
 		// každá osa jinou barvou
 		color = new ArrayList<>();

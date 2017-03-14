@@ -15,6 +15,9 @@ public class Triangle extends GeometricObject {
 		vertexBuffer.add(new Point3D(1, 0, 0));
 		vertexBuffer.add(new Point3D(0, 1, 0));
 		vertexBuffer.add(new Point3D(0, 0, 1));	
+		
+		color = new ArrayList<>();
+		color.add(0x25B7E8);
 	}
 
 }
