@@ -27,6 +27,7 @@ import cz.uhk.pgrf.geometry.Cube;
 import cz.uhk.pgrf.geometry.Objekt3D;
 import cz.uhk.pgrf.geometry.Osy;
 import cz.uhk.pgrf.geometry.Tetrahedron;
+import cz.uhk.pgrf.geometry.Triangle;
 import cz.uhk.pgrf.geometry.WireFrameRenderer;
 import cz.uhk.pgrf.transforms.Camera;
 import cz.uhk.pgrf.transforms.Mat4;

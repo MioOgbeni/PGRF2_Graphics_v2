@@ -53,8 +53,8 @@ public class WireFrameRenderer implements Renderable {
     public void render(List<Objekt3D> objs) {
         for (Objekt3D obj : objs) {
             render(obj);
-        }
-
+       }
+        zbf.Clear();
     }
     
     //vykreslí 1 daný objekt
@@ -69,7 +69,7 @@ public class WireFrameRenderer implements Renderable {
     @Override
     public void render(GeometricObject geoObj, Mat4 model) {    	
     	count = 0;
-    	zbf.Clear();
+    	
     	
     	if(geoObj.isTransferable()){
     		this.model = geoObj.getMat().mul(model);
@@ -197,11 +197,11 @@ public class WireFrameRenderer implements Renderable {
             }
             
             for (int y = Math.max((int)vecA.getY() + 1, 0); y <= Math.min((int)vecB.getY(), zbf.getHeight() - 1); y++) {
-            	double t = (y - vecA.getY()) / (vecB.getY() - vecA.getY());
+            	double t = ((double)y - vecA.getY()) / (vecB.getY() - vecA.getY());
             	double x1 = vecA.getX() * (1.0 - t) + vecB.getX() * t;
             	double z1 = vecA.getZ() * (1.0 - t) + vecB.getZ() * t;
             	
-            	double t2 = (y - vecA.getY()) / (vecC.getY() - vecA.getY());
+            	double t2 = ((double)y - vecA.getY()) / (vecC.getY() - vecA.getY());
             	double x2 = vecA.getX() * (1.0 - t2) + vecC.getX() * t2;       	
             	double z2 = vecA.getZ() * (1.0 - t2) + vecC.getZ() * t2;
             	
@@ -215,7 +215,7 @@ public class WireFrameRenderer implements Renderable {
                 }
 
             	for (int x = Math.max((int)x1 + 1, 0); x <= Math.min(x2, zbf.getWidth() - 1); x++) {
-            		double t3 = (x - x1) / (x2 - x1);
+            		double t3 = ((double)x - x1) / (x2 - x1);
             		double z3 = z1 * (1.0 - t3) + z2 * t3;
             		if (zbf.getPixel(x, y) >= z3 && z3 >= 0.0) {
             			zbf.setPixel(x, y, z3);
@@ -225,11 +225,11 @@ public class WireFrameRenderer implements Renderable {
             }      
 
             for (int y = Math.max((int)vecB.getY() + 1, 0); y <= Math.min(vecC.getY(), zbf.getHeight() - 1); y++) {
-            	double t = (y - vecB.getY()) / (vecC.getY() - vecA.getY());
+            	double t = ((double)y - vecB.getY()) / (vecC.getY() - vecB.getY());
             	double x1 = vecB.getX() * (1.0 - t) + vecC.getX() * t;
             	double z1 = vecB.getZ() * (1.0 - t) + vecC.getZ() * t;
             	
-            	double t2 = (y - vecA.getY()) / (vecC.getY() - vecA.getY());
+            	double t2 = ((double)y - vecA.getY()) / (vecC.getY() - vecA.getY());
             	double x2 = vecA.getX() * (1.0 - t2) + vecC.getX() * t2;       	
             	double z2 = vecA.getZ() * (1.0 - t2) + vecC.getZ() * t2;
             	
@@ -243,9 +243,9 @@ public class WireFrameRenderer implements Renderable {
                 }
 
             	for (int x = Math.max((int)x1 + 1, 0); x <= Math.min(x2, zbf.getWidth() - 1); x++) {
-            		double t3 = (x - x1) / (x2 - x1);
+            		double t3 = ((double)x - x1) / (x2 - x1);
             		double z3 = z1 * (1.0 - t3) + z2 * t3;
-            		if (zbf.getPixel(x, y) >= z3 && z3 >= 0.0) {
+            		if (zbf.getPixel(x, y) > z3 && z3 >= 0.0) {
             			zbf.setPixel(x, y, z3);
             			img.setRGB(x, y, color);
             		}
