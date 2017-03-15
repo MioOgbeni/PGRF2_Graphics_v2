@@ -1,4 +1,4 @@
-package cz.uhk.pgrf.geometry;
+package cz.uhk.pgrf.renderer;
 
 public class Zbuffer {
 	private double [][] buffer;

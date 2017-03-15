@@ -1,8 +1,9 @@
-package cz.uhk.pgrf.geometry;
+package cz.uhk.pgrf.geometry.models;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import cz.uhk.pgrf.geometry.GeometricObject;
 import cz.uhk.pgrf.transforms.Point3D;
 
 /**

@@ -1,8 +1,10 @@
-package cz.uhk.pgrf.geometry;
+package cz.uhk.pgrf.renderer;
 
 import java.awt.image.BufferedImage;
 import java.util.List;
 
+import cz.uhk.pgrf.geometry.GeometricObject;
+import cz.uhk.pgrf.geometry.Objekt3D;
 import cz.uhk.pgrf.transforms.Mat4;
 import cz.uhk.pgrf.transforms.Point3D;
 

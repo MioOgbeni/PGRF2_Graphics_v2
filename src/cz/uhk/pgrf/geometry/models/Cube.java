@@ -1,8 +1,10 @@
-package cz.uhk.pgrf.geometry;
+package cz.uhk.pgrf.geometry.models;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import cz.uhk.pgrf.geometry.GeometricObject;
 import cz.uhk.pgrf.transforms.Point3D;
 
 /**
@@ -31,17 +33,11 @@ public class Cube extends GeometricObject {
 		vertexBuffer.add(new Point3D( 1, -1, -1));
 		
 		color = new ArrayList<>();
-		color.add(0x25B7E8);
-		color.add(0xB825E8);
-		color.add(0xE85725);
-		color.add(0x55E825);
-		color.add(0xFF9ED7);
-		color.add(0xFFF79E);
-		color.add(0x9EFFC6);
-		color.add(0x9EA7FF);
-		color.add(0xD9E000);
-		color.add(0x00E077);
-		color.add(0x0700E0);
-		color.add(0xE00069);
+		for (int i = 0; i < indexBuffer.size(); i++){
+			int r = (int) (Math.random() * (255 - 0)) + 0;
+			int g = (int) (Math.random() * (255 - 0)) + 0;
+			int b = (int) (Math.random() * (255 - 0)) + 0;
+			color.add(new Color(r, g, b).getRGB());
+		}
 	}
 }
