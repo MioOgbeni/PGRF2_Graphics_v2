@@ -12,7 +12,7 @@ public class Mesh extends GeometricObject{
 	private Mat4 krivka;
 	private Bicubic mesh;
 	
-	public static final int body = 16;
+	public static final int body = 4;
 	public static final Point3D p11 = new Point3D(0, 3, 0);
 	public static final Point3D p12 = new Point3D(1, 3, 0);
 	public static final Point3D p13 = new Point3D(2, 3, 0);
@@ -34,24 +34,44 @@ public class Mesh extends GeometricObject{
 	public static final Point3D p44 = new Point3D(3, 0, 0);
 	
 	public Mesh() {
-	 krivka = Cubic.BEZIER;
-	 mesh = new Bicubic(krivka, p11, p12, p13, p14, p21, p22, p23, p24, p31, p32, p33, p34, p41, p42, p43, p44);
-	vertexBuffer = new ArrayList<>();
-	indexBuffer = new ArrayList<>();
-	for (int i = 0; i < body-1; i++){
-		for (int j = 0; j < body-1; j++){
-			vertexBuffer.add(mesh.compute((double) i / body,(double) j / body));
-			if (i % 2 == 1){
-				indexBuffer.add(j);
-				indexBuffer.add(j+1);
-				indexBuffer.add(j+3);
-				
-				indexBuffer.add(j);
-				indexBuffer.add(j+2);
-				indexBuffer.add(j+3);
+		krivka = Cubic.BEZIER;
+		mesh = new Bicubic(krivka, p11, p12, p13, p14, p21, p22, p23, p24, p31, p32, p33, p34, p41, p42, p43, p44);
+		vertexBuffer = new ArrayList<>();
+		indexBuffer = new ArrayList<>();
+		for (int i = 0; i <= body; i++){
+			for (int j = 0; j <= body; j++){
+				vertexBuffer.add(mesh.compute((double) i / body,(double) j / body));
 			}
-		}
-	 }
-	 
+	 	}
+		
+		for (int i = 0; i < body; i++){
+			for (int j = 0; j < body; j++){	
+//				if(i % 2 == 0 && j % 2 == 0){
+					indexBuffer.add(i*(body+1)+j);
+					indexBuffer.add(i*(body+1)+j+1);
+					indexBuffer.add((i+1)*(body+1)+j);
+					
+					indexBuffer.add(i*(body+1)+j+1);
+					indexBuffer.add((i+1)*(body+1)+j);
+					indexBuffer.add((i+1)*(body+1)+j+1);
+//				}
+
+
+			}
+	 	}
+		System.out.println(vertexBuffer.get(0));
+		System.out.println(vertexBuffer.get(1));
+		System.out.println(vertexBuffer.get(2));
+		System.out.println(vertexBuffer.get(3));
+		System.out.println(vertexBuffer.size());
+		
+		System.out.println(indexBuffer.size());
+		
+		System.out.println(indexBuffer.get(0));
+		System.out.println(indexBuffer.get(1));	
+		System.out.println(indexBuffer.get(2));
+		System.out.println(indexBuffer.get(3));
+		System.out.println(indexBuffer.get(4));
+		System.out.println(indexBuffer.get(5));	
 	}
 }

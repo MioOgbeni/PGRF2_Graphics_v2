@@ -325,7 +325,7 @@ public class Canvas {
 	}
 	
 	private void vyberMesh() {
-		if (jTriangle.isSelected()){
+		if (jMesh.isSelected()){
 			gos.add(mesh);
 			draw();
 		}else{
