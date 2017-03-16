@@ -43,7 +43,7 @@ import cz.uhk.pgrf.transforms.Vec3D;
  * Třída pro kreslení do prostoru, interface prostoru.
  * 
  * @author Tomáš Novák
- * @version 2016
+ * @version 2017
  */
 
 public class Canvas {
@@ -63,7 +63,7 @@ public class Canvas {
 	private Objekt3D tetra;
 	private Objekt3D triangle;
 	private Objekt3D mesh;
-	//jak rychlé budou pohyby
+	// jak rychlé (velké) budou pohyby
 	private final double step = 0.5;
 	private JRadioButton jPers;
 	private JRadioButton jOrth;
@@ -114,7 +114,7 @@ public class Canvas {
 
 		model = new Mat4Identity();
 		proj = new Mat4PerspRH(Math.PI / 4, 1, 0.1, 200);
-		camera = new Camera(new Vec3D(-10, 0, 0), 0, 0, 1, true);
+		camera = new Camera(new Vec3D(-15, 0, 0), 0, 0, 1, true);
 		view = camera.getViewMatrix();
 
 		gos.add(new Objekt3D(new Osy()));
@@ -127,30 +127,30 @@ public class Canvas {
 		/**
 		 * nastavení a použítí myši
 		 */
-		MouseAdapter mouse = new MouseAdapter(){
+		MouseAdapter mouse = new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				endX = e.getX();
 				endY = e.getY();
 			}
 		};
-		
+
 		panel.addMouseListener(mouse);
-		
+
 		MouseAdapter mousemove = new MouseAdapter() {
 
 			@Override
 			public void mouseDragged(MouseEvent e) {
-				// otáčení objektu BTN3 a camery BTN1       
-		        posunX = endX;
-		        posunY = endY;
-		        
-		        endX = e.getX();
-		        endY = e.getY();
-		        
-		        int posunoutX = endX - posunX;
+				// otáčení objektu BTN3 a camery BTN1
+				posunX = endX;
+				posunY = endY;
+
+				endX = e.getX();
+				endY = e.getY();
+
+				int posunoutX = endX - posunX;
 				int posunoutY = endY - posunY;
-				switch (e.getModifiers()){
+				switch (e.getModifiers()) {
 				case MouseEvent.BUTTON1_MASK:
 					camera = camera.addAzimuth((double) -posunoutX * Math.PI / 720);
 					camera = camera.addZenith((double) -posunoutY * Math.PI / 720);
@@ -221,12 +221,12 @@ public class Canvas {
 					break;
 				case KeyEvent.VK_T:
 					// zvětšit
-					sc = sc * (1+step);
+					sc = sc * (1 + step);
 					Mat4 scale1 = new Mat4Scale(sc, sc, sc);
-					model = model.mul(scale1);	
+					model = model.mul(scale1);
 				}
 				draw();
-			}	
+			}
 		};
 		frame.addKeyListener(key);
 
@@ -263,17 +263,17 @@ public class Canvas {
 
 		jFill.setFocusable(false);
 		jWire.setFocusable(false);
-		
+
 		jCube = new JCheckBox("Krychle");
 		jTetra = new JCheckBox("Jehlan");
 		jTriangle = new JCheckBox("Trojuhelník");
 		jMesh = new JCheckBox("Síť");
-		
+
 		jCube.setFocusable(false);
 		jTetra.setFocusable(false);
 		jTriangle.setFocusable(false);
 		jMesh.setFocusable(false);
-		
+
 		kontejner.add(jPers);
 		kontejner.add(jOrth);
 		kontejner.add(jFill);
@@ -282,7 +282,7 @@ public class Canvas {
 		kontejner.add(jTetra);
 		kontejner.add(jTriangle);
 		kontejner.add(jMesh);
-		
+
 		Reset.addActionListener(e -> reset());
 		jPers.addActionListener(e -> vyberPers());
 		jOrth.addActionListener(e -> vyberOrth());
@@ -295,40 +295,40 @@ public class Canvas {
 	}
 
 	private void vyberCube() {
-		if (jCube.isSelected()){
+		if (jCube.isSelected()) {
 			gos.add(cube);
 			draw();
-		}else{
+		} else {
 			gos.remove(cube);
 			draw();
 		}
 	}
 
 	private void vyberTetra() {
-		if (jTetra.isSelected()){
+		if (jTetra.isSelected()) {
 			gos.add(tetra);
 			draw();
-		}else{
+		} else {
 			gos.remove(tetra);
 			draw();
 		}
 	}
-	
+
 	private void vyberTriangle() {
-		if (jTriangle.isSelected()){
+		if (jTriangle.isSelected()) {
 			gos.add(triangle);
 			draw();
-		}else{
+		} else {
 			gos.remove(triangle);
 			draw();
 		}
 	}
-	
+
 	private void vyberMesh() {
-		if (jMesh.isSelected()){
+		if (jMesh.isSelected()) {
 			gos.add(mesh);
 			draw();
-		}else{
+		} else {
 			gos.remove(mesh);
 			draw();
 		}
@@ -338,7 +338,6 @@ public class Canvas {
 		jFill.setSelected(true);
 		wfr.setFillOrNot(true);
 		draw();
-		
 
 	}
 
@@ -362,7 +361,7 @@ public class Canvas {
 	private void reset() {
 		sc = 1;
 		model = new Mat4Identity();
-		camera = new Camera(new Vec3D(-10, 0, 0), 0, 0, 1, true);
+		camera = new Camera(new Vec3D(-20, 0, 0), 0, 0, 1, true);
 		view = camera.getViewMatrix();
 		proj = new Mat4PerspRH(Math.PI / 4, 1, 0.1, 200);
 		jPers.setSelected(true);
@@ -409,7 +408,7 @@ public class Canvas {
 		Graphics start = panel.getGraphics();
 		start.setColor(Color.BLACK);
 		start.setFont(new Font("TimesRoman", Font.PLAIN, 40));
-		start.drawString("VYBERTE OBJEKT/Y", img.getWidth()/2-200, img.getHeight()/2-20);
+		start.drawString("VYBERTE OBJEKT/Y", img.getWidth() / 2 - 200, img.getHeight() / 2 - 20);
 	}
 
 	public void help() {

@@ -11,30 +11,31 @@ import cz.uhk.pgrf.transforms.Point3D;
  * Tøída Krychle.
  * 
  * @author Tomáš Novák
- * @version 2016
+ * @version 2017
  */
 
 public class Cube extends GeometricObject {
 
 	public Cube() {
 
-		Integer[] ints = new Integer[] { 0,1,2,  0,2,3,  0,4,5,  0,5,1,  3,2,6,  3,6,7,  4,7,6,  4,6,5,  1,2,6,  1,6,5,  0,3,7,  0,7,4 };
+		Integer[] ints = new Integer[] { 0, 1, 2, 0, 2, 3, 0, 4, 5, 0, 5, 1, 3, 2, 6, 3, 6, 7, 4, 7, 6, 4, 6, 5, 1, 2,
+				6, 1, 6, 5, 0, 3, 7, 0, 7, 4 };
 		indexBuffer = new ArrayList<>(Arrays.asList(ints));
 
 		vertexBuffer = new ArrayList<>();
-		vertexBuffer.add(new Point3D(-1, -1,  1));
-		vertexBuffer.add(new Point3D(-1,  1,  1));
-		vertexBuffer.add(new Point3D( 1,  1,  1));
-		vertexBuffer.add(new Point3D( 1, -1,  1));
+		vertexBuffer.add(new Point3D(-1, -1, 1));
+		vertexBuffer.add(new Point3D(-1, 1, 1));
+		vertexBuffer.add(new Point3D(1, 1, 1));
+		vertexBuffer.add(new Point3D(1, -1, 1));
 
 		vertexBuffer.add(new Point3D(-1, -1, -1));
-		vertexBuffer.add(new Point3D(-1,  1, -1));
-		vertexBuffer.add(new Point3D( 1,  1, -1));
-		vertexBuffer.add(new Point3D( 1, -1, -1));
-		
-		//generování bodù
+		vertexBuffer.add(new Point3D(-1, 1, -1));
+		vertexBuffer.add(new Point3D(1, 1, -1));
+		vertexBuffer.add(new Point3D(1, -1, -1));
+
+		// generování barvy
 		color = new ArrayList<>();
-		for (int i = 0; i < indexBuffer.size(); i++){
+		for (int i = 0; i < indexBuffer.size(); i++) {
 			int r = (int) (Math.random() * (255 - 0)) + 0;
 			int g = (int) (Math.random() * (255 - 0)) + 0;
 			int b = (int) (Math.random() * (255 - 0)) + 0;

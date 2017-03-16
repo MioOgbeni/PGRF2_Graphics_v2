@@ -12,7 +12,7 @@ import cz.uhk.pgrf.transforms.Point3D;
  * Abstraktní tøída (pøedek objektù).
  * 
  * @author Tomáš Novák
- * @version 2016
+ * @version 2017
  */
 
 public abstract class GeometricObject {

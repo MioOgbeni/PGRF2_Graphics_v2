@@ -10,7 +10,7 @@ import cz.uhk.pgrf.transforms.Mat4Identity;
  * Tøída obecného objektu.
  * 
  * @author Tomáš Novák
- * @version 2016
+ * @version 2017
  */
 
 public class Objekt3D {
