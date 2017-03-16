@@ -32,6 +32,7 @@ public class Cube extends GeometricObject {
 		vertexBuffer.add(new Point3D( 1,  1, -1));
 		vertexBuffer.add(new Point3D( 1, -1, -1));
 		
+		//generování bodù
 		color = new ArrayList<>();
 		for (int i = 0; i < indexBuffer.size(); i++){
 			int r = (int) (Math.random() * (255 - 0)) + 0;

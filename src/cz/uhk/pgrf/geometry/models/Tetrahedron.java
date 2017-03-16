@@ -26,6 +26,7 @@ public class Tetrahedron extends GeometricObject {
 		vertexBuffer.add(new Point3D(-2, 2, 2));
 		vertexBuffer.add(new Point3D(2, 2, -2));
 		
+		//generování barvy
 		color = new ArrayList<>();
 		for (int i = 0; i < indexBuffer.size(); i++){
 			int r = (int) (Math.random() * (255 - 0)) + 0;

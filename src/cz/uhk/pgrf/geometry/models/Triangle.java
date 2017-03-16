@@ -14,10 +14,11 @@ public class Triangle extends GeometricObject {
         indexBuffer = new ArrayList<>(Arrays.asList(ints));
 
         vertexBuffer = new ArrayList<>();
-		vertexBuffer.add(new Point3D(1, 0, 0));
-		vertexBuffer.add(new Point3D(0, 1, 0));
+		vertexBuffer.add(new Point3D(4, 0, 0));
+		vertexBuffer.add(new Point3D(0, 2, 0));
 		vertexBuffer.add(new Point3D(0, 0, 1));	
 		
+		//generování barvy
 		color = new ArrayList<>();
 		for (int i = 0; i < indexBuffer.size(); i++){
 			int r = (int) (Math.random() * (255 - 0)) + 0;
